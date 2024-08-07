@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
+#set -eo pipefail
 
 # Functions
 
@@ -24,17 +24,24 @@ log_light_blue() {
 	echo -e "\e[1;34m${1}\e[0m"
 }
 
-check_output() {
-	if [ $1 -eq 0 ]; then
-		log_yellow "${2} - OK"
+run_cmd() {
+	CMD=$1
+	DESC=${2:-"[default] Execute command"}
+	TMP_OUTPUT=$(mktemp)
+
+	${CMD} >${TMP_OUTPUT} 2>&1
+
+	if [ $? -eq 0 ]; then
+		log_yellow "${DESC} - OK"
 	else
-		log_red "${2} - ERROR: ${1}"
+		log_error "${DESC} - ERROR: $(cat ${TMP_OUTPUT})"
 	fi
 }
 
 # Set variables
 ZELLIJ_VERSION=${ZELLIJ_VERSION:-"v0.40.1"}
 EZA_VERSION=${EZA_VERSION:-"v0.18.19"}
+FZF_VERSION=${FZF_VERSION:-"0.54.3"}
 
 # Setup extra repos
 if [ ! -f /etc/apt/sources.list.d/nodesource.list ]; then
@@ -44,19 +51,35 @@ else
 fi
 
 # Install tools
-sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs golang python3-pip python3-venv alacritty 2>&1 1>/dev/null
 
-check_output $? "[apt] Install tools"
+run_cmd "sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs golang python3-pip python3-venv kitty zsh zoxide" "[apt] Install tools"
 
 # Install fonts
-[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
-curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf -o ~/.local/share/fonts/MesloLGSNFRegular.ttf 2>&1 1>/dev/null
+#[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
+#run_cmd "curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf -o ~/.local/share/fonts/MesloLGSNFRegular.ttf" "[curl] Install font MesloGLS"
+#run_cmd "fc-cache -fv" "[fc-cache] Refresh fonts cache"
 
-check_output $? "[curl] Install font MesloGLS"
+# Install ZSH
+#sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-fc-cache -fv 2>&1 1>/dev/null
+# Install ZSH plugins
+# Autosuggestions: https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#oh-my-zsh
+#git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# Kube-ps1: https://github.com/jonmosco/kube-ps1?tab=readme-ov-file#oh-my-zsh
 
-check_output $? "[fc-cache] Refresh fonts cache"
+# Install oh-my-posh
+#curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
+
+# Install fzf
+if [ "$(uname -m)" == "x86_64" ]; then
+	curl -sLO https://github.com/junegunn/fzf/releases/download/v${FZF_VERSION}/fzf-${FZF_VERSION}-linux_amd64.tar.gz
+	sudo tar -C /usr/local/bin -xzf fzf-${FZF_VERSION}-linux_amd64.tar.gz
+	sudo rm fzf-${FZF_VERSION}-linux_amd64.tar.gz
+else
+	curl -sLO https://github.com/junegunn/fzf/releases/download/v${FZF_VERSION}/fzf-${FZF_VERSION}-linux_arm64.tar.gz
+	sudo tar -C /usr/local/bin -xzf fzf-${FZF_VERSION}-linux_arm64.tar.gz
+	sudo rm fzf-${FZF_VERSION}-linux_arm64.tar.gz
+fi
 
 # Install eza
 if [ "$(uname -m)" == "x86_64" ]; then
