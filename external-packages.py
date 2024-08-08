@@ -1,14 +1,58 @@
 import tarfile
 import requests
-import io
+from os.path import expanduser, isdir
+from os import makedirs
 
 packages = {
     "zoxide": {
         "type": "tar",
-        "url": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.4/zoxide-0.9.4-x86_64-unknown-linux-musl.tar.gz",
+        "url": {
+            "x86_64": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.4/zoxide-0.9.4-x86_64-unknown-linux-musl.tar.gz",
+            "arm64": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.4/zoxide-0.9.4-armv7-unknown-linux-musleabihf.tar.gz",
+        },
         "file": "zoxide",
-    }
+    },
+    "opentofu": {
+        "type": "tar",
+        "url": {
+            "x86_64": "https://github.com/opentofu/opentofu/releases/download/v1.8.1/tofu_1.8.1_linux_amd64.tar.gz",
+            "arm64": "https://github.com/opentofu/opentofu/releases/download/v1.8.1/tofu_1.8.1_linux_arm.tar.gz",
+        },
+        "file": "tofu",
+    },
+    "fzf": {
+        "type": "tar",
+        "url": {
+            "x86_64": "https://github.com/junegunn/fzf/releases/download/v0.54.3/fzf-0.54.3-linux_amd64.tar.gz",
+            "arm64": "https://github.com/junegunn/fzf/releases/download/v0.54.3/fzf-0.54.3-linux_armv7.tar.gz",
+        },
+        "file": "fzf",
+    },
+    "eza": {
+        "type": "tar",
+        "url": {
+            "x86_64": "https://github.com/eza-community/eza/releases/download/v0.19.0/eza_x86_64-unknown-linux-musl.tar.gz",
+            "arm64": "https://github.com/eza-community/eza/releases/download/v0.19.0/eza_aarch64-unknown-linux-gnu.tar.gz",
+        },
+        "file": "./eza",
+    },
+    "zellij": {
+        "type": "tar",
+        "url": {
+            "x86_64": "https://github.com/zellij-org/zellij/releases/download/v0.40.1/zellij-x86_64-unknown-linux-musl.tar.gz",
+            "arm64": "https://github.com/zellij-org/zellij/releases/download/v0.40.1/zellij-aarch64-unknown-linux-musl.tar.gz",
+        },
+        "file": "zellij",
+    },
 }
+
+arch = "x86_64"
+bin_path = expanduser("~/.local/bin")
+
+
+def setup() -> None:
+    if not isdir(bin_path):
+        makedirs(bin_path)
 
 
 def package_install_tar(pkg: str, file: str, dest: str) -> None:
@@ -28,17 +72,19 @@ def package_download(url: str, output: str) -> None:
 
 
 def main():
+    setup()
+
     for package in packages:
         print(f"Downloading package: {package}")
-        tmp_file = packages[package]["url"].split("/")[-1]
+        tmp_file = packages[package]["url"][arch].split("/")[-1]
         package_download(
-            url=packages[package]["url"],
+            url=packages[package]["url"][arch],
             output=f"/tmp/{tmp_file}",
         )
         package_install_tar(
             pkg=f"/tmp/{tmp_file}",
             file=packages[package]["file"],
-            dest=f"/tmp/{packages[package]['file']}",
+            dest=f"{bin_path}/{packages[package]['file']}",
         )
 
 
