@@ -56,9 +56,13 @@ def setup() -> None:
 
 
 def package_install_tar(pkg: str, file: str, dest: str) -> None:
-    with tarfile.open(pkg, "r") as tar:
-        with tar.extractfile(member=file) as f:
-            open(dest, "wb").write(f.read())
+    with tarfile.open(name=pkg, mode="r", bufsize=10240) as tar:
+        if file not in tar.getnames():
+            print(f"File [{file}] not found in archive")
+        else:
+            f = tar.extractfile(member=file)
+            f_content = f.read()
+            open(dest, "wb").write(f_content)
 
 
 def package_download(url: str, output: str) -> None:
