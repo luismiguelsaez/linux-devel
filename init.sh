@@ -57,7 +57,7 @@ run_cmd "sudo systemctl mask sleep.target suspend.target hibernate.target hybrid
 
 # Install os packages
 
-run_cmd "sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs golang python3-pip python3-venv kitty zsh" "[apt] Install tools"
+run_cmd "sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs golang python3-pip python3-venv kitty zsh btop yazi" "[apt] Install tools"
 
 # Install fonts
 #[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts

@@ -1,4 +1,5 @@
 import tarfile
+import zipfile
 import requests
 from os.path import expanduser, isdir
 from os import makedirs
@@ -11,6 +12,14 @@ packages = {
             "arm64": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.4/zoxide-0.9.4-armv7-unknown-linux-musleabihf.tar.gz",
         },
         "file": "zoxide",
+    },
+    "yazi": {
+        "type": "zip",
+        "url": {
+            "x86_64": "https://github.com/sxyazi/yazi/releases/download/v0.3.0/yazi-x86_64-unknown-linux-gnu.zip",
+            "arm64": "https://github.com/sxyazi/yazi/releases/download/v0.3.0/yazi-x86_64-unknown-linux-gnu.zip",
+        },
+        "file": "yazi",
     },
     "opentofu": {
         "type": "tar",
@@ -65,6 +74,13 @@ def package_install_tar(pkg: str, file: str, dest: str) -> None:
             open(dest, "wb").write(f_content)
 
 
+def package_install_zip(pkg: str, file: str, dest: str) -> None:
+    with zipfile.ZipFile(file=pkg, mode="r") as zip:
+        print(f"Installing zip file: {zip.namelist()}")
+        with zip.open("yazi-x86_64-unknown-linux-gnu/yazi") as zip_file:
+            open(dest, "wb").write(zip_file.read())
+
+
 def package_download(url: str, output: str) -> None:
     with requests.get(
         url=url,
@@ -88,6 +104,13 @@ def main():
         if packages[package]["type"] == "tar":
             print(f"Installing tar package: {package}")
             package_install_tar(
+                pkg=f"/tmp/{tmp_file}",
+                file=packages[package]["file"],
+                dest=f"{bin_path}/{packages[package]['file']}",
+            )
+        elif packages[package]["type"] == "zip":
+            print(f"Installing zip package: {package}")
+            package_install_zip(
                 pkg=f"/tmp/{tmp_file}",
                 file=packages[package]["file"],
                 dest=f"{bin_path}/{packages[package]['file']}",
