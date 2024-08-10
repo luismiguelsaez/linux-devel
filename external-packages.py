@@ -85,11 +85,13 @@ def main():
             url=packages[package]["url"][arch],
             output=f"/tmp/{tmp_file}",
         )
-        package_install_tar(
-            pkg=f"/tmp/{tmp_file}",
-            file=packages[package]["file"],
-            dest=f"{bin_path}/{packages[package]['file']}",
-        )
+        if packages[package]["type"] == "tar":
+            print(f"Installing tar package: {package}")
+            package_install_tar(
+                pkg=f"/tmp/{tmp_file}",
+                file=packages[package]["file"],
+                dest=f"{bin_path}/{packages[package]['file']}",
+            )
 
 
 if __name__ == "__main__":
