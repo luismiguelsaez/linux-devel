@@ -42,6 +42,7 @@ run_cmd() {
 ZELLIJ_VERSION=${ZELLIJ_VERSION:-"v0.40.1"}
 EZA_VERSION=${EZA_VERSION:-"v0.18.19"}
 FZF_VERSION=${FZF_VERSION:-"0.54.3"}
+ZOXIDE_VERSION=${ZOXIDE_VERSION:-"0.9.4"}
 
 # Setup extra repos
 if [ ! -f /etc/apt/sources.list.d/nodesource.list ]; then
@@ -50,17 +51,21 @@ else
 	log_blue "Skipping NodeJS repo. File already exists"
 fi
 
-# Install tools
+# System
+## Disable sleep
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 
-run_cmd "sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs golang python3-pip python3-venv kitty zsh zoxide" "[apt] Install tools"
+# Install os packages
+
+run_cmd "sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs golang python3-pip python3-venv kitty zsh" "[apt] Install tools"
 
 # Install fonts
 #[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
 #run_cmd "curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf -o ~/.local/share/fonts/MesloLGSNFRegular.ttf" "[curl] Install font MesloGLS"
 #run_cmd "fc-cache -fv" "[fc-cache] Refresh fonts cache"
 
-# Install ZSH
-#sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# Install ohmyzsh
+#sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 # Install ZSH plugins
 # Autosuggestions: https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#oh-my-zsh
@@ -79,6 +84,19 @@ else
 	curl -sLO https://github.com/junegunn/fzf/releases/download/v${FZF_VERSION}/fzf-${FZF_VERSION}-linux_arm64.tar.gz
 	sudo tar -C /usr/local/bin -xzf fzf-${FZF_VERSION}-linux_arm64.tar.gz
 	sudo rm fzf-${FZF_VERSION}-linux_arm64.tar.gz
+fi
+
+# Install zoxide
+if [ "$(uname -m)" == "x86_64" ]; then
+	curl -sLO https://github.com/ajeetdsouza/zoxide/releases/download/v${ZOXIDE_VERSION}/zoxide-${ZOXIDE_VERSION}-x86_64-unknown-linux-musl.tar.gz
+	sudo tar -C /usr/local/bin -xzf zoxide-${ZOXIDE_VERSION}-x86_64-unknown-linux-musl.tar.gz
+	sudo rm zoxide-${ZOXIDE_VERSION}-x86_64-unknown-linux-musl.tar.gz
+
+else
+	curl -sLO https://github.com/ajeetdsouza/zoxide/releases/download/v${ZOXIDE_VERSION}/zoxide-${ZOXIDE_VERSION}-aarch64-unknown-linux-musl.tar.gz
+	sudo tar -C /usr/local/bin -xzf zoxide-${ZOXIDE_VERSION}-aarch64-unknown-linux-musl.tar.gz
+	sudo rm zoxide-${ZOXIDE_VERSION}-aarch64-unknown-linux-musl.tar.gz
+
 fi
 
 # Install eza
