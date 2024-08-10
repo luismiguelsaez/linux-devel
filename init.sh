@@ -53,7 +53,7 @@ fi
 
 # System
 ## Disable sleep
-sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+run_cmd "sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target" "[systemctl] Disable sleep"
 
 # Install os packages
 
@@ -65,7 +65,11 @@ run_cmd "sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs
 #run_cmd "fc-cache -fv" "[fc-cache] Refresh fonts cache"
 
 # Install ohmyzsh
-#sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+if [ ! -e ~/.oh-my-zsh ]; then
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+else
+	log_yellow "Skipping ohmyzsh install"
+fi
 
 # Install ZSH plugins
 # Autosuggestions: https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#oh-my-zsh
@@ -91,12 +95,10 @@ if [ "$(uname -m)" == "x86_64" ]; then
 	curl -sLO https://github.com/ajeetdsouza/zoxide/releases/download/v${ZOXIDE_VERSION}/zoxide-${ZOXIDE_VERSION}-x86_64-unknown-linux-musl.tar.gz
 	sudo tar -C /usr/local/bin -xzf zoxide-${ZOXIDE_VERSION}-x86_64-unknown-linux-musl.tar.gz
 	sudo rm zoxide-${ZOXIDE_VERSION}-x86_64-unknown-linux-musl.tar.gz
-
 else
 	curl -sLO https://github.com/ajeetdsouza/zoxide/releases/download/v${ZOXIDE_VERSION}/zoxide-${ZOXIDE_VERSION}-aarch64-unknown-linux-musl.tar.gz
 	sudo tar -C /usr/local/bin -xzf zoxide-${ZOXIDE_VERSION}-aarch64-unknown-linux-musl.tar.gz
 	sudo rm zoxide-${ZOXIDE_VERSION}-aarch64-unknown-linux-musl.tar.gz
-
 fi
 
 # Install eza
