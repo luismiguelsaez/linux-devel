@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=arduino-ide
+GenericName=Arduino IDE
+Comment=Arduino development
+TryExec=/opt/arduino-ide/arduino-ide
+StartupNotify=true
+Exec=/opt/arduino-ide/arduino-ide
+Icon=/opt/arduino-ide/resources/app/resources/icons/512x512.png
+Categories=System;Development;
