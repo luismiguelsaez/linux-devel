@@ -41,8 +41,10 @@ run_cmd() {
 # Set variables
 ZELLIJ_VERSION=${ZELLIJ_VERSION:-"v0.40.1"}
 EZA_VERSION=${EZA_VERSION:-"v0.18.19"}
+BAT_VERSION=${BAT_VERSION:-"0.24.0"}
 FZF_VERSION=${FZF_VERSION:-"0.54.3"}
 ZOXIDE_VERSION=${ZOXIDE_VERSION:-"0.9.4"}
+ARDUINO_VERSION=${ARDUINO_VERSION:-"2.3.2"}
 
 # Setup extra repos
 if [ ! -f /etc/apt/sources.list.d/nodesource.list ]; then
@@ -57,7 +59,7 @@ run_cmd "sudo systemctl mask sleep.target suspend.target hibernate.target hybrid
 
 # Install os packages
 
-run_cmd "sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs golang python3-pip python3-venv kitty zsh btop yazi" "[apt] Install tools"
+run_cmd "sudo apt-get -y install gcc make cmake gettext git curl bat stow nodejs golang python3-pip python3-venv kitty zsh btop" "[apt] Install tools"
 
 # Install fonts
 #[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
@@ -112,13 +114,25 @@ else
 	sudo rm eza_aarch64-unknown-linux-gnu.tar.gz
 fi
 
+# Install bat
+if [ "$(uname -m)" == "x86_64" ]; then
+	curl -sLO https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat-v${BAT_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+	sudo tar -C /usr/local/bin -xzf bat-v${BAT_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+	sudo rm bat-v${BAT_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+else
+	curl -sLO https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat-v${BAT_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+	curl -sLO https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat-v${BAT_VERSION}-arm-unknown-linux-gnueabihf.tar.gz
+	sudo tar -C /usr/local/bin -xzf bat-v${BAT_VERSION}-arm-unknown-linux-gnueabihf.tar.gz
+	sudo rm bat-v${BAT_VERSION}-arm-unknown-linux-gnueabihf.tar.gz
+fi
+
 # Install neovim
 if [ "$(uname -m)" == "x86_64" ]; then
 	curl -sLO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
 	sudo rm -rf /opt/nvim
 	sudo tar -C /opt --transform 's/nvim-linux64/nvim/g' -xzf nvim-linux64.tar.gz
 	sudo rm nvim-linux64.tar.gz
-	sudo stow -d /opt nvim
+	#sudo stow -d /opt nvim
 else
 	curl -sLO https://github.com/neovim/neovim/archive/refs/tags/nightly.tar.gz
 	tar -C /opt -xzf nightly.tar.gz
@@ -126,6 +140,15 @@ else
 	make -j$(nproc) install
 	cd -
 	rm nightly.tar.gz
+fi
+
+# Install Arduino IDE 2.x
+if [ "$(uname -m)" == "x86_64" ]; then
+	curl -sLO https://github.com/arduino/arduino-ide/releases/download/${ARDUINO_VERSION}/arduino-ide_${ARDUINO_VERSION}_Linux_64bit.zip
+	sudo unzip -f arduino-ide_${ARDUINO_VERSION}_Linux_64bit.zip -d /opt/
+	sudo mv /opt/arduino-ide_${ARDUINO_VERSION}_Linux_64bit /opt/arduino-ide
+else
+	echo "Skipping Arduino IDE: no ARM build available"
 fi
 
 # Install Zellij

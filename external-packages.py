@@ -37,6 +37,14 @@ packages = {
         },
         "file": "fzf",
     },
+    "bat": {
+        "type": "tar",
+        "url": {
+            "x86_64": "https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-v0.24.0-x86_64-unknown-linux-gnu.tar.gz",
+            "arm64": "https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-v0.24.0-arm-unknown-linux-gnueabihf.tar.gz",
+        },
+        "file": "bat-v0.24.0-x86_64-unknown-linux-gnu/bat",
+    },
     "eza": {
         "type": "tar",
         "url": {
