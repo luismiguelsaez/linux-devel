@@ -1,0 +1,22 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "vLLM (ai-server)",
+      "options": {
+        "baseURL": "http://ai-server.local:8000/v1"
+      },
+      "models": {
+        "Qwen3.6-27B-DFlash": {
+          "name": "Qwen3.6-27B-DFlash"
+        }
+      }
+    }
+  },
+  "model": "vllm/Qwen3.6-27B-DFlash",
+  "permission": {
+    "write": "ask",
+    "bash": "ask"
+  }
+}
