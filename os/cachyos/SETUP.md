@@ -2,13 +2,6 @@
 
 - [Arch document](https://wiki.archlinux.org/title/Power_management#ACPI_events)
 
-Edit /etc/systemd/logind.conf
-
-HandleLidSwitch=suspend
-HandleLidSwitchDocked=suspend
-
-## Disable SWAP
-
 - Disable `zram` swap service
 
 ```bash
@@ -26,5 +19,17 @@ sudo mkswap -U clear --size 4G --file /swapfile
 
 ```
 /swapfile none swap defaults 0 0
+```
+
+- Enable `resume` in mkinitcpio.conf
+
+```
+HOOKS=(base systemd autodetect microcode kms modconf block keyboard sd-vconsole plymouth filesystems resume)
+```
+
+- Rebuild
+
+```bash
+sudo mkinitcpio -P
 ```
 
