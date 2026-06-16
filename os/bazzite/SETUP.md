@@ -19,5 +19,5 @@ nvidia-ctk cdi list
 ## Run
 
 ```bash
-podman run -it --device nvidia.com/gpu=all --security-opt=label=disable -p 8000:8000 ghcr.io/ggerganov/llama.cpp:server-cuda-b4719 -hfr unsloth/gemma-4-12b-it-GGUF:Q4_K_M -ctk q8_0 -ctv q4_0 -np 1 -c 131072
+podman run -it --device nvidia.com/gpu=all --security-opt=label=disable -p 8000:8000 ghcr.io/ggml-org/llama.cpp:server-cuda13 -hfr unsloth/gemma-4-12b-it-GGUF:Q4_K_M -ctk q8_0 -ctv q4_0 -np 1 -c 131072
 ```
