@@ -1,0 +1,13 @@
+[Container]
+ContainerName=llamacpp-gemma-4-12b-it
+Image=ghcr.io/ggml-org/llama.cpp:server-cuda13
+PublishPort=8080:8080
+Volume=/home/luismi/.cache/huggingface:/root/.cache/huggingface:rw
+Network=host
+AddDevice=nvidia.com/gpu=all
+SecurityLabelDisable=true
+Exec=-hfr unsloth/gemma-4-12b-it-GGUF:Q4_K_M -ctk q4_0 -ctv q4_0 -np 1 -c 131072 -fa on
+
+# Doc: https://docs.podman.io/en/stable/markdown/podman-systemd.unit.5.html
+# Reference: podman run -it --device nvidia.com/gpu=all --security-opt=label=disable -p 8000:8000 -v $HOME/.cache/huggingface:/root/.cache/huggingface ghcr.io/ggml-org/llama.cpp:server-cuda13 -hfr unsloth/gemma-4-12b-it-GGUF:Q4_K_M -ctk q4_0 -ctv q4_0 -np 1 -c 131072 -fa on
+

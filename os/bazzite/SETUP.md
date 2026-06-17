@@ -30,4 +30,6 @@ podman run -it --device nvidia.com/gpu=all --security-opt=label=disable -p 8000:
 rpm-ostree kargs \
 --append-if-missing=nvidia.NVreg_PreserveVideoMemoryAllocations=1 \
 --append-if-missing=nvidia.NVreg_TemporaryFilePath=/var/tmp
+
+rpm-ostree kargs --append mem_sleep_default=s2idle
 ```
