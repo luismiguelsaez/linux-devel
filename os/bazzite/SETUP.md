@@ -33,3 +33,11 @@ rpm-ostree kargs \
 
 rpm-ostree kargs --append mem_sleep_default=s2idle
 ```
+
+# Access to serial devices
+
+```bash
+sudo setfacl -m u:luismi:rw /dev/ttyACM0
+```
+
+*This is the device created after connecting an external serial port through USB*
