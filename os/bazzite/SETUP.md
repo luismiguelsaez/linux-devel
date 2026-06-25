@@ -41,3 +41,11 @@ sudo setfacl -m u:luismi:rw /dev/ttyACM0
 ```
 
 *This is the device created after connecting an external serial port through USB*
+
+# Containers ( podman )
+
+## Create container systemd unit file
+
+```bash
+cp ./quadlets/llamacpp.container ~/.config/containers/systemd/llamacpp.container
+```
