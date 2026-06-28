@@ -1,7 +1,7 @@
 ## Packages
 
 ```bash
-pacman -S brave-bin mangohud cmake cuda proton-cachyos-native steam
+pacman -S brave-bin mangohud cmake cuda proton-cachyos-native steam cachyos-gaming-meta
 ```
 
 ## Hibernation not working
