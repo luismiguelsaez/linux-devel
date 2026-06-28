@@ -1,3 +1,9 @@
+## Packages
+
+```bash
+pacman -S brave-bin mangohud cmake cuda proton-cachyos-native steam
+```
+
 ## Hibernation not working
 
 - [Arch document](https://wiki.archlinux.org/title/Power_management#ACPI_events)
